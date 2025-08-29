@@ -282,6 +282,17 @@ def update_nuscenes_infos(pkl_path, out_dir):
         temp_data_info['ego2global'] = convert_quaternion_to_matrix(
             ori_info_dict['ego2global_rotation'],
             ori_info_dict['ego2global_translation'])
+        
+        # 処理されていないkeyをそのまま移行
+        processed_keys = {
+            'token', 'ego2global_rotation', 'ego2global_translation',
+            'num_features', 'lidar_path', 'lidar2ego_rotation', 'lidar2ego_translation',
+            'timestamp', 'sweeps', 'cams', 'gt_boxes', 'gt_names', 'gt_velocity',
+            'num_lidar_pts', 'num_radar_pts', 'valid_flag', 'pts_semantic_mask_path'
+        }
+        for key, value in ori_info_dict.items():
+            if key not in processed_keys:
+                temp_data_info[key] = value
         temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict.get(
             'num_features', 5)
         temp_data_info['lidar_points']['lidar_path'] = Path(
